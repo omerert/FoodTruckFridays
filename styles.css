@@ -1,0 +1,19 @@
+ .calendar-grid {
+     display: grid;
+     grid-template-columns: repeat(7, minmax(0, 1fr));
+ }
+
+ .calendar-day {
+     min-height: 120px;
+ }
+
+ .calendar-day-header {
+     font-size: 0.875rem;
+     font-weight: 600;
+     color: #4A5568;
+ }
+
+ /* Ensure modal is on top */
+ #modal-view {
+     z-index: 50;
+ }
