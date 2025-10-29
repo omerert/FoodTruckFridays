@@ -17,3 +17,14 @@
  #modal-view {
      z-index: 50;
  }
+
+ /* upcoming list tweaks */
+ #upcoming-list-ul li:hover {
+     transform: translateY(-2px);
+     transition: transform 150ms ease;
+ }
+
+ /* highlight calendar event days */
+ .calendar-day.has-event {
+     background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+ }

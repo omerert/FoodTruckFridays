@@ -102,6 +102,11 @@ let currentDisplayDate = new Date();
 // let's set the calendar to october 2025 so it matches the screenshot
 currentDisplayDate = new Date(2025, 9, 1);
 
+// determine a base date for the "every other day" schedule
+// we pick the earliest date in the foodTruckSchedule keys as the base
+const scheduleDates = Object.keys(foodTruckSchedule).slice().sort();
+const baseEventDate = scheduleDates.length ? new Date(scheduleDates[0]) : new Date();
+
 // --- dom elements ---
 // here we're just grabbing all the html parts we need to work with
 // we declare them here, but we'll assign them *after* the dom loads
@@ -185,43 +190,41 @@ function buildCalendar(year, month) {
         dayNumber.textContent = day;
         dayCell.appendChild(dayNumber);
 
-        // check if it's a friday
-        if (dayOfWeek === 5) {
-            // format the date like "2025-10-31" to match our data
-            const dateString = currentDate.toISOString().split('T')[0];
-            const eventData = foodTruckSchedule[dateString];
+        const dateString = currentDate.toISOString().split('T')[0];
+        const eventData = foodTruckSchedule[dateString];
 
-            if (eventData) {
-                // we have an event! let's create the info box
-                const eventDiv = document.createElement('div');
-                eventDiv.className = "mt-1 text-xs";
+        if (eventData) {
+            // visually mark event days that have scheduled trucks
+            dayCell.classList.add('has-event');
 
-                const truckName = document.createElement('p');
-                truckName.className = "font-bold text-gray-900";
-                truckName.textContent = eventData.truckName;
+            const eventDiv = document.createElement('div');
+            eventDiv.className = "mt-1 text-xs";
 
-                const flag = document.createElement('button');
-                flag.className = "text-lg hover:opacity-75 transition-opacity";
-                flag.textContent = eventData.flag;
-                // add a click listener to show the modal with this event's info
-                flag.addEventListener('click', () => {
-                    populateAndShowModal(eventData);
-                });
+            const truckName = document.createElement('p');
+            truckName.className = "font-bold text-gray-900";
+            truckName.textContent = eventData.truckName;
 
-                const location = document.createElement('p');
-                location.className = "text-gray-600";
-                location.textContent = eventData.location;
+            const flag = document.createElement('button');
+            flag.className = "text-lg hover:opacity-75 transition-opacity";
+            flag.textContent = eventData.flag;
+            flag.addEventListener('click', () => {
+                populateAndShowModal(eventData);
+            });
 
-                const time = document.createElement('p');
-                time.className = "text-gray-600";
-                time.textContent = eventData.time;
+            const location = document.createElement('p');
+            location.className = "text-gray-600";
+            location.textContent = eventData ? eventData.location : '';
 
-                eventDiv.appendChild(truckName);
-                eventDiv.appendChild(flag);
-                eventDiv.appendChild(location);
-                eventDiv.appendChild(time);
-                dayCell.appendChild(eventDiv);
-            }
+            const time = document.createElement('p');
+            time.className = "text-gray-600";
+            time.textContent = eventData ? eventData.time : '';
+
+            eventDiv.appendChild(truckName);
+            eventDiv.appendChild(flag);
+            eventDiv.appendChild(location);
+            eventDiv.appendChild(time);
+
+            dayCell.appendChild(eventDiv);
         }
 
         calendarGrid.appendChild(dayCell);
@@ -248,6 +251,62 @@ function populateAndShowModal(eventData) {
     showModal();
 }
 
+/**
+ * Build the upcoming list view: shows the next N upcoming event days (based on every-other-day rule)
+ * and maps any known trucks from foodTruckSchedule.
+ * @param {number} daysAhead - how many days ahead to search (defaults to 30)
+ */
+function buildUpcomingList(daysAhead = 30) {
+    const listEl = document.getElementById('upcoming-list-ul');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+
+    // Get all scheduled dates from today forward
+    const today = new Date();
+    const scheduledDates = Object.keys(foodTruckSchedule)
+        .sort()
+        .slice(0, daysAhead);
+
+    scheduledDates.forEach(dateString => {
+        const eventData = foodTruckSchedule[dateString];
+
+        const li = document.createElement('li');
+        li.className = 'bg-white p-3 rounded-lg shadow-sm';
+
+        const row = document.createElement('div');
+        row.className = 'flex justify-between items-start gap-3';
+
+        const left = document.createElement('div');
+        const dateLabel = document.createElement('div');
+        dateLabel.className = 'text-sm text-gray-500';
+        dateLabel.textContent = new Date(dateString).toLocaleDateString();
+
+        const title = document.createElement('div');
+        title.className = 'font-semibold text-gray-800';
+        title.textContent = eventData.truckName;
+
+        left.appendChild(dateLabel);
+        left.appendChild(title);
+
+        const right = document.createElement('div');
+        right.className = 'text-right';
+        const flagBtn = document.createElement('button');
+        flagBtn.className = 'text-xl';
+        flagBtn.textContent = eventData.flag;
+        right.appendChild(flagBtn);
+
+        row.appendChild(left);
+        row.appendChild(right);
+
+        li.appendChild(row);
+
+        // make item clickable to show modal
+        li.style.cursor = 'pointer';
+        li.addEventListener('click', () => populateAndShowModal(eventData));
+
+        listEl.appendChild(li);
+    });
+}
 // --- initial app setup ---
 // this runs once all the html is loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -270,6 +329,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // build the calendar for the first time
     // now calendarGrid will be a valid element
     buildCalendar(currentDisplayDate.getFullYear(), currentDisplayDate.getMonth());
+
+    // build the upcoming list for the first time
+    buildUpcomingList(30);
 
     // --- navigation event listeners ---
     // set up all our buttons
