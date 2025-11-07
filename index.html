@@ -196,4 +196,22 @@
                     <button type="button" id="share-cancel" class="px-4 py-2 rounded-md border">Cancel</button>
                     <button type="submit" id="share-submit" class="px-4 py-2 rounded-md bg-indigo-600 text-white">Submit Story</button>
                 </div>
-            </form
+            </form>
+        </div>
+    </div>
+
+    <!-- Stories View (hidden by default) -->
+    <div id="stories-view" class="hidden">
+        <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-gray-800">Stories</h2>
+                <button id="stories-back-btn" class="text-indigo-600 hover:text-indigo-800">&larr; Back</button>
+            </div>
+            <ul id="stories-list" class="space-y-4">
+                <!-- Stories will be rendered here by JS -->
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>
