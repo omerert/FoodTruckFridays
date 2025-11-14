@@ -1,5 +1,6 @@
 // Import schedule data from separate module
 import { foodTruckSchedule } from './calendarData.js';
+import { initJoinGroup } from './joinGroup.js';
 
 // --- app state ---
 // this just keeps track of what month we're looking at
@@ -282,7 +283,8 @@ document.addEventListener('DOMContentLoaded', () => {
         home: document.getElementById('home-view'),
         calendar: document.getElementById('calendar-view'),
         modal: document.getElementById('modal-view'),
-        share: document.getElementById('share-view')
+        share: document.getElementById('share-view'),
+        joinGroup: document.getElementById('join-group-view')
     };
     calendarGrid = document.getElementById('calendar-days-grid');
     calendarTitle = document.getElementById('calendar-month-year');
@@ -315,10 +317,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // home -> join group
+    const viewJoinGroupBtn = document.getElementById('view-join-group-btn');
+    if (viewJoinGroupBtn) {
+        viewJoinGroupBtn.addEventListener('click', () => {
+            showView('joinGroup');
+        });
+    }
+
     // calendar -> home
     document.getElementById('back-to-home-btn').addEventListener('click', () => {
         showView('home');
     });
+
+    // join group -> home
+    const groupBackBtn = document.getElementById('group-back-btn');
+    if (groupBackBtn) {
+        groupBackBtn.addEventListener('click', () => {
+            showView('home');
+        });
+    }
 
     // share -> home (back)
     const shareBackBtn = document.getElementById('share-back-btn');
@@ -361,5 +379,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById("calendar-month-year").classList.remove("active");
     });
+
+    // Initialize the Join Group module
+    initJoinGroup();
 
 });

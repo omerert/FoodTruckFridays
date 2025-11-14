@@ -47,3 +47,51 @@
  .calendar-day.has-event {
      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
  }
+
+ /* Group card animations */
+ #groups-list>div {
+     animation: slideInUp 0.3s ease-out;
+ }
+
+ @keyframes slideInUp {
+     from {
+         opacity: 0;
+         transform: translateY(10px);
+     }
+
+     to {
+         opacity: 1;
+         transform: translateY(0);
+     }
+ }
+
+ /* Group join button animations */
+ .group-join-btn {
+     transition: all 200ms ease;
+ }
+
+ .group-join-btn:hover {
+     transform: translateY(-2px);
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+ }
+
+ .group-join-btn:active {
+     transform: translateY(0);
+ }
+
+ /* Filter controls styling */
+ #browse-groups-section select,
+ #create-group-section input,
+ #create-group-section textarea,
+ #create-group-section select {
+     transition: border-color 150ms ease, box-shadow 150ms ease;
+ }
+
+ #browse-groups-section select:focus,
+ #create-group-section input:focus,
+ #create-group-section textarea:focus,
+ #create-group-section select:focus {
+     outline: none;
+     border-color: #4F46E5;
+     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+ }
