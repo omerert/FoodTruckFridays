@@ -2,13 +2,14 @@
 # DP4 ReadMe Document
 
 ### Overview
-FoodTruckConnect is a front-end prototype to explore food trucks, check schedules, join interest groups, and share short stories about visits; it runs entirely in the browser with no backend or database required.
+FoodTruckConnect is a website to help immigrants explore food trucks, check schedules, join interest groups, and share short stories about visits; it runs entirely in the browser with no backend or database required. 
 
 In this prototype you can:
 - View a monthly calendar and an upcoming list of scheduled food trucks.
-- Click a country flag to open a cuisine modal with details and images.
+- Click a country flag to view cuisine description and images. 
 - Share a story with rating and photos on the Share Story page.
 - View stories, react to them, and add comments on the Stories page.
+- Browse or create food truck groups on the Join Group page. 
 
 All data is stored in localStorage in your browser and is cleared if browser storage is wiped or when using private browsing modes depending on the browser’s behavior.
 
@@ -18,7 +19,7 @@ All data is stored in localStorage in your browser and is cleared if browser sto
 
 Some browsers may block ES module imports when opening index.html via the file:// protocol; if you see a blank page, run a small local server instead of opening the file directly.
 
-### Quick start
+### How to run UI
 - Deployed on: https://omerert.github.io/FoodTruckConnect/
 
 or
@@ -47,4 +48,4 @@ or
 - Placeholder images from a placeholder image service; educational links (e.g., Wikipedia) appear in cuisine modals as external references.
 
 ### Video walkthrough
-YouTube: https://www.youtube.com/watch?v=5XqWiSdn9Nw
+YouTube link: https://www.youtube.com/watch?v=5XqWiSdn9Nw
