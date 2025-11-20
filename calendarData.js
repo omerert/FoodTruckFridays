@@ -197,7 +197,7 @@ export const foodTruckSchedule = {
             img2: "https://placehold.co/300x200/FFFFFF/000000?text=naan"
         }
     },
-    "2025-11-07": {
+    "2025-11-22": {
         truckName: "La Vita è Bella",
         location: "Tech Park Courtyard",
         time: "11:30 AM - 2:30 PM",
@@ -210,7 +210,7 @@ export const foodTruckSchedule = {
             img2: "https://placehold.co/300x200/CD212A/FFFFFF?text=Pizza"
         }
     },
-    "2025-11-10": {
+    "2025-11-30": {
         truckName: "BBQ Brothers",
         location: "South Field",
         time: "5 PM - 9 PM",
@@ -223,7 +223,7 @@ export const foodTruckSchedule = {
             img2: "https://placehold.co/300x200/DAA520/000000?text=Ribs"
         }
     },
-    "2025-11-12": {
+    "2025-11-28": {
         truckName: "Crepes & Co",
         location: "West Walk",
         time: "10 AM - 2 PM",
@@ -236,7 +236,7 @@ export const foodTruckSchedule = {
             img2: "https://placehold.co/300x200/FFFFFF/000000?text=Galette"
         }
     },
-    "2025-11-14": {
+    "2025-11-21": {
         truckName: "Tokyo Drift Tastes",
         location: "Main Plaza (East Side)",
         time: "11:00 AM - 2:00 PM",
