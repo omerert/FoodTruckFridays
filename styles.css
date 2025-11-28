@@ -84,7 +84,17 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-#groups-list > div, 
+@keyframes bounce-subtle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+.animate-bounce-subtle {
+    animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+#groups-list > div,
+#joined-groups-list > div,
 #stories-list > li {
     animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

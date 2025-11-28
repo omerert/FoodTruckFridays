@@ -322,13 +322,14 @@
                 <!-- View Toggle -->
                 <div class="inline-flex bg-white rounded-xl p-1 shadow-sm border border-gray-100 mb-8">
                     <button id="show-join-groups-view" class="px-6 py-2.5 rounded-lg text-sm font-medium view-nav-btn active transition-all">Browse Groups</button>
+                    <button id="show-joined-groups-view" class="px-6 py-2.5 rounded-lg text-sm font-medium view-nav-btn transition-all">Groups Joined</button>
                     <button id="show-create-group-view" class="px-6 py-2.5 rounded-lg text-sm font-medium view-nav-btn transition-all">Create Group</button>
                 </div>
 
                 <!-- Browse Groups Section -->
                 <div id="browse-groups-section" class="space-y-6">
                     <!-- Filters -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-gradient-to-r from-white to-cream-50 rounded-2xl shadow-sm border border-mauve-100 p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="relative">
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Cuisine</label>
                             <div class="relative">
@@ -380,6 +381,19 @@
                     <!-- Groups List -->
                     <div id="groups-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Groups rendered here -->
+                    </div>
+                </div>
+
+                <!-- Joined Groups Section -->
+                <div id="joined-groups-section" class="hidden space-y-6">
+                    <div class="bg-gradient-to-r from-mauve-50 to-purple-50 rounded-2xl shadow-sm border border-mauve-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Your Communities</h3>
+                        <p class="text-sm text-gray-600">These are the groups you've joined. Connect with members and explore upcoming food truck events together!</p>
+                    </div>
+                    
+                    <!-- Joined Groups List -->
+                    <div id="joined-groups-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Joined groups rendered here -->
                     </div>
                 </div>
 

@@ -200,75 +200,89 @@ function filterGroups(cuisine = '', type = '', size = '') {
     return groups;
 }
 
-// Render recommended food trucks
+// Render recommended food trucks with event info
 function renderRecommendedTrucks(trucks) {
     if (trucks.length === 0) {
         return '<p class="text-sm text-gray-500 italic">No recommended food trucks at this time.</p>';
     }
 
-    let html = '<div class="mt-3 pt-3 border-t border-gray-200"><p class="text-xs font-semibold text-gray-700 mb-2">🍽️ Recommended Food Trucks:</p><div class="space-y-2">';
+    let html = '<div class="mt-3 pt-3 border-t border-gray-200"><p class="text-xs font-semibold text-gray-700 mb-2 flex items-center gap-1"><span class="text-base">🍽️</span> Recommended Food Trucks & Events:</p><div class="space-y-2">';
 
     trucks.slice(0, 3).forEach(truck => {
         html += `
-            <div class="text-xs bg-orange-50 border border-orange-200 rounded p-2">
+            <div class="text-xs bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 rounded-lg p-2.5 hover:shadow-md transition-shadow">
                 <div class="flex items-center gap-2 mb-1">
                     <span class="text-lg">${truck.flag}</span>
-                    <span class="font-semibold text-gray-800">${truck.truckName}</span>
+                    <span class="font-bold text-gray-800">${truck.truckName}</span>
                 </div>
-                <p class="text-gray-600">${truck.cuisine}</p>
-                <p class="text-gray-500">${truck.time} @ ${truck.location}</p>
+                <p class="text-gray-600 font-medium">${truck.cuisine}</p>
+                <div class="mt-1 flex items-center gap-1 text-gray-500">
+                    <span class="text-xs">📅</span>
+                    <p class="text-xs">${truck.date}</p>
+                </div>
+                <div class="flex items-center gap-1 text-gray-500">
+                    <span class="text-xs">🕐</span>
+                    <p class="text-xs">${truck.time}</p>
+                </div>
+                <div class="flex items-center gap-1 text-gray-500">
+                    <span class="text-xs">📍</span>
+                    <p class="text-xs">${truck.location}</p>
+                </div>
             </div>
         `;
     });
 
     if (trucks.length > 3) {
-        html += `<p class="text-xs text-gray-500 italic">...and ${trucks.length - 3} more</p>`;
+        html += `<p class="text-xs text-mauve-600 italic font-medium">...and ${trucks.length - 3} more upcoming events!</p>`;
     }
 
     html += '</div></div>';
     return html;
 }
 
-// Render a single group card
-function renderGroupCard(group) {
+// Render a single group card with enhanced styling
+function renderGroupCard(group, showJoinButton = true) {
     const isJoined = isUserInGroup(group.id);
     const recommendedTrucks = getRecommendedTrucks(group.cuisine);
 
     const card = document.createElement('div');
-    card.className = 'bg-white rounded-lg shadow-md border border-gray-200 p-4 hover:shadow-lg transition-shadow';
+    card.className = 'bg-gradient-to-br from-white to-cream-50 rounded-2xl shadow-md border border-mauve-100 p-5 hover:shadow-xl hover:scale-[1.02] transition-all duration-300';
 
     card.innerHTML = `
-        <div class="flex items-start justify-between mb-2">
+        <div class="flex items-start justify-between mb-3">
             <div class="flex items-start gap-3 flex-1">
-                <div class="text-3xl">${group.imageEmoji}</div>
+                <div class="text-4xl animate-bounce-subtle">${group.imageEmoji}</div>
                 <div class="flex-1">
-                    <h4 class="font-bold text-gray-800">${group.name}</h4>
-                    <p class="text-sm text-gray-600">Created by ${group.createdBy}</p>
+                    <h4 class="font-bold text-gray-800 text-lg">${group.name}</h4>
+                    <p class="text-xs text-gray-500">Created by ${group.createdBy}</p>
                 </div>
             </div>
         </div>
         
-        <p class="text-sm text-gray-700 mb-3">${group.description}</p>
+        <p class="text-sm text-gray-700 mb-3 leading-relaxed">${group.description}</p>
         
         <div class="flex flex-wrap gap-2 mb-3">
-            <span class="text-xs bg-indigo-100 text-indigo-800 rounded-full px-3 py-1">${group.cuisine}</span>
-            <span class="text-xs bg-purple-100 text-purple-800 rounded-full px-3 py-1">${group.type === 'culture' ? '🌍 Cultural' : group.type === 'language' ? '💬 Language' : '🤝 Mixed'}</span>
-            ${group.language ? `<span class="text-xs bg-blue-100 text-blue-800 rounded-full px-3 py-1">${group.language}</span>` : ''}
+            <span class="text-xs bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-800 rounded-full px-3 py-1.5 font-medium">${group.cuisine}</span>
+            <span class="text-xs bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 rounded-full px-3 py-1.5 font-medium">${group.type === 'culture' ? '🌍 Cultural' : group.type === 'language' ? '💬 Language' : '🤝 Mixed'}</span>
+            ${group.language ? `<span class="text-xs bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-800 rounded-full px-3 py-1.5 font-medium">${group.language}</span>` : ''}
         </div>
 
         ${renderRecommendedTrucks(recommendedTrucks)}
         
-        <div class="flex items-center justify-between mt-4">
+        <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
             <div class="flex items-center gap-2 text-sm text-gray-600">
-                <span>👥</span>
-                <span><strong class="group-member-count-${group.id}">${group.members}</strong> members</span>
+                <span class="text-lg">👥</span>
+                <span><strong class="group-member-count-${group.id} text-mauve-600">${group.members}</strong> members</span>
             </div>
-            <button class="group-join-btn px-4 py-2 rounded-md text-sm font-medium transition-all ${isJoined
-            ? 'bg-red-100 text-red-700 hover:bg-red-200'
-            : 'bg-indigo-600 text-white hover:bg-indigo-700'
-        }" data-group-id="${group.id}" data-joined="${isJoined}">
-                ${isJoined ? '✓ Leave' : '+ Join'}
-            </button>
+            ${showJoinButton ? `
+            <button class="group-join-btn px-5 py-2.5 rounded-xl text-sm font-semibold transition-all transform hover:scale-105 shadow-sm ${isJoined
+                ? 'bg-gradient-to-r from-red-100 to-red-200 text-red-700 hover:shadow-md'
+                : 'bg-gradient-to-r from-mauve-500 to-mauve-600 text-white hover:shadow-lg'
+            }" data-group-id="${group.id}" data-joined="${isJoined}">
+                ${isJoined ? '✓ Joined' : '+ Join Group'}
+            </button>` : `
+            <span class="text-xs bg-green-100 text-green-700 px-3 py-1.5 rounded-full font-semibold">✓ Member</span>
+            `}
         </div>
     `;
 
@@ -290,8 +304,9 @@ function renderGroupsList() {
 
     if (groups.length === 0) {
         groupsList.innerHTML = `
-            <div class="text-center py-8">
-                <p class="text-gray-500 mb-4">No groups match your filters.</p>
+            <div class="col-span-full text-center py-12">
+                <div class="text-6xl mb-4">🔍</div>
+                <p class="text-gray-600 text-lg font-medium mb-2">No groups match your filters.</p>
                 <p class="text-sm text-gray-400">Try adjusting your preferences or create a new group!</p>
             </div>
         `;
@@ -299,7 +314,46 @@ function renderGroupsList() {
     }
 
     groups.forEach(group => {
-        const card = renderGroupCard(group);
+        const card = renderGroupCard(group, true);
+        groupsList.appendChild(card);
+    });
+
+    // Add event listeners to join buttons
+    document.querySelectorAll('.group-join-btn').forEach(btn => {
+        btn.addEventListener('click', handleGroupButtonClick);
+    });
+}
+
+// Render joined groups
+function renderJoinedGroupsList() {
+    const memberships = getUserGroupMemberships();
+    const allGroups = loadGroups();
+    const joinedGroups = allGroups.filter(group => memberships.includes(group.id));
+    const groupsList = document.getElementById('joined-groups-list');
+
+    if (!groupsList) return;
+
+    groupsList.innerHTML = '';
+
+    if (joinedGroups.length === 0) {
+        groupsList.innerHTML = `
+            <div class="col-span-full text-center py-12">
+                <div class="text-6xl mb-4">👋</div>
+                <p class="text-gray-600 text-lg font-medium mb-2">You haven't joined any groups yet!</p>
+                <p class="text-sm text-gray-400 mb-4">Browse available groups to find your community.</p>
+                <button id="go-to-browse" class="px-6 py-2.5 bg-mauve-600 text-white rounded-xl font-medium hover:bg-mauve-700 transition-all shadow-md hover:shadow-lg">
+                    Browse Groups
+                </button>
+            </div>
+        `;
+        document.getElementById('go-to-browse')?.addEventListener('click', () => {
+            switchGroupTab('browse');
+        });
+        return;
+    }
+
+    joinedGroups.forEach(group => {
+        const card = renderGroupCard(group, true);
         groupsList.appendChild(card);
     });
 
@@ -318,13 +372,13 @@ function handleGroupButtonClick(e) {
     if (isJoined) {
         leaveGroup(groupId);
         btn.dataset.joined = 'false';
-        btn.textContent = '+ Join';
-        btn.className = 'group-join-btn px-4 py-2 rounded-md text-sm font-medium transition-all bg-indigo-600 text-white hover:bg-indigo-700';
+        btn.textContent = '+ Join Group';
+        btn.className = 'group-join-btn px-5 py-2.5 rounded-xl text-sm font-semibold transition-all transform hover:scale-105 shadow-sm bg-gradient-to-r from-mauve-500 to-mauve-600 text-white hover:shadow-lg';
     } else {
         joinGroup(groupId);
         btn.dataset.joined = 'true';
-        btn.textContent = '✓ Leave';
-        btn.className = 'group-join-btn px-4 py-2 rounded-md text-sm font-medium transition-all bg-red-100 text-red-700 hover:bg-red-200';
+        btn.textContent = '✓ Joined';
+        btn.className = 'group-join-btn px-5 py-2.5 rounded-xl text-sm font-semibold transition-all transform hover:scale-105 shadow-sm bg-gradient-to-r from-red-100 to-red-200 text-red-700 hover:shadow-md';
     }
 
     // Update the member count display
@@ -336,25 +390,45 @@ function handleGroupButtonClick(e) {
             memberCountElement.textContent = group.members;
         }
     }
+
+    // Refresh joined groups tab if it's active
+    const joinedTab = document.getElementById('show-joined-groups-view');
+    if (joinedTab && joinedTab.classList.contains('active')) {
+        renderJoinedGroupsList();
+    }
 }
 
-// Switch between browse and create views
-function switchGroupView(viewType) {
+// Switch between browse, joined, and create views
+function switchGroupTab(viewType) {
     const browseSection = document.getElementById('browse-groups-section');
+    const joinedSection = document.getElementById('joined-groups-section');
     const createSection = document.getElementById('create-group-section');
     const browseBtn = document.getElementById('show-join-groups-view');
+    const joinedBtn = document.getElementById('show-joined-groups-view');
     const createBtn = document.getElementById('show-create-group-view');
 
+    // Hide all sections
+    browseSection?.classList.add('hidden');
+    joinedSection?.classList.add('hidden');
+    createSection?.classList.add('hidden');
+    
+    // Remove active from all buttons
+    browseBtn?.classList.remove('active');
+    joinedBtn?.classList.remove('active');
+    createBtn?.classList.remove('active');
+
+    // Show selected section
     if (viewType === 'browse') {
-        browseSection.classList.remove('hidden');
-        createSection.classList.add('hidden');
-        browseBtn.classList.add('active');
-        createBtn.classList.remove('active');
-    } else {
-        browseSection.classList.add('hidden');
-        createSection.classList.remove('hidden');
-        browseBtn.classList.remove('active');
-        createBtn.classList.add('active');
+        browseSection?.classList.remove('hidden');
+        browseBtn?.classList.add('active');
+        renderGroupsList();
+    } else if (viewType === 'joined') {
+        joinedSection?.classList.remove('hidden');
+        joinedBtn?.classList.add('active');
+        renderJoinedGroupsList();
+    } else if (viewType === 'create') {
+        createSection?.classList.remove('hidden');
+        createBtn?.classList.add('active');
     }
 }
 
@@ -391,7 +465,7 @@ function handleCreateGroup(e) {
                             cuisine === 'North American' ? '🇺🇸' : '🌍'
     };
 
-    groups.push(newGroup);
+    groups.unshift(newGroup); // Add to top of list
     saveGroups(groups);
 
     // Add user to their own group
@@ -404,7 +478,7 @@ function handleCreateGroup(e) {
     alert(`Great! Your group "${newGroup.name}" has been created!`);
 
     // Switch back to browse view to show new group
-    switchGroupView('browse');
+    switchGroupTab('browse');
     renderGroupsList();
 }
 
@@ -412,11 +486,15 @@ function handleCreateGroup(e) {
 export function initJoinGroup() {
     // Set up view switching buttons
     document.getElementById('show-join-groups-view')?.addEventListener('click', () => {
-        switchGroupView('browse');
+        switchGroupTab('browse');
+    });
+
+    document.getElementById('show-joined-groups-view')?.addEventListener('click', () => {
+        switchGroupTab('joined');
     });
 
     document.getElementById('show-create-group-view')?.addEventListener('click', () => {
-        switchGroupView('create');
+        switchGroupTab('create');
     });
 
     // Set up filter listeners
@@ -429,7 +507,7 @@ export function initJoinGroup() {
 
     document.getElementById('create-cancel')?.addEventListener('click', () => {
         document.getElementById('create-group-form').reset();
-        switchGroupView('browse');
+        switchGroupTab('browse');
     });
 
     // Initial render
