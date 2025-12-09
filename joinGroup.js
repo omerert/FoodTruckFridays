@@ -325,7 +325,7 @@ function renderGroupCard(group, showJoinButton = true) {
     const recommendedTrucks = getRecommendedTrucks(group.cuisine);
 
     const card = document.createElement('div');
-    card.className = 'bg-gradient-to-br from-white to-cream-50 rounded-2xl shadow-md border border-mauve-100 p-5 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer self-start';
+    card.className = 'bg-gradient-to-br from-white to-cream-50 rounded-2xl shadow-md border border-mauve-100 p-5 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer';
     card.dataset.groupId = group.id;
 
     card.innerHTML = `
@@ -386,7 +386,7 @@ function renderGroupsList() {
 
     if (groups.length === 0) {
         groupsList.innerHTML = `
-            <div class="col-span-full text-center py-12">
+            <div class="w-full text-center py-12">
                 <div class="text-6xl mb-4">🔍</div>
                 <p class="text-gray-600 text-lg font-medium mb-2">No groups match your filters.</p>
                 <p class="text-sm text-gray-400">Try adjusting your preferences or create a new group!</p>
@@ -395,10 +395,24 @@ function renderGroupsList() {
         return;
     }
 
-    groups.forEach(group => {
+    // Create two columns for desktop
+    const column1 = document.createElement('div');
+    const column2 = document.createElement('div');
+    column1.className = 'flex flex-col gap-6 flex-1';
+    column2.className = 'hidden md:flex flex-col gap-6 flex-1';
+
+    groups.forEach((group, index) => {
         const card = renderGroupCard(group, true);
-        groupsList.appendChild(card);
+        // Alternate between columns
+        if (index % 2 === 0) {
+            column1.appendChild(card);
+        } else {
+            column2.appendChild(card);
+        }
     });
+
+    groupsList.appendChild(column1);
+    groupsList.appendChild(column2);
 
     // Add event listeners to join buttons
     document.querySelectorAll('.group-join-btn').forEach(btn => {
@@ -406,7 +420,7 @@ function renderGroupsList() {
     });
 
     // Add event listeners to cards for detail view
-    document.querySelectorAll('#groups-list > div').forEach(card => {
+    document.querySelectorAll('#groups-list .cursor-pointer').forEach(card => {
         card.addEventListener('click', (e) => {
             // Only show details if not clicking the button
             if (!e.target.classList.contains('group-join-btn')) {
@@ -430,7 +444,7 @@ function renderJoinedGroupsList() {
 
     if (joinedGroups.length === 0) {
         groupsList.innerHTML = `
-            <div class="col-span-full text-center py-12">
+            <div class="w-full text-center py-12">
                 <div class="text-6xl mb-4">👋</div>
                 <p class="text-gray-600 text-lg font-medium mb-2">You haven't joined any groups yet!</p>
                 <p class="text-sm text-gray-400 mb-4">Browse available groups to find your community.</p>
@@ -445,10 +459,24 @@ function renderJoinedGroupsList() {
         return;
     }
 
-    joinedGroups.forEach(group => {
+    // Create two columns for desktop
+    const column1 = document.createElement('div');
+    const column2 = document.createElement('div');
+    column1.className = 'flex flex-col gap-6 flex-1';
+    column2.className = 'hidden md:flex flex-col gap-6 flex-1';
+
+    joinedGroups.forEach((group, index) => {
         const card = renderGroupCard(group, true);
-        groupsList.appendChild(card);
+        // Alternate between columns
+        if (index % 2 === 0) {
+            column1.appendChild(card);
+        } else {
+            column2.appendChild(card);
+        }
     });
+
+    groupsList.appendChild(column1);
+    groupsList.appendChild(column2);
 
     // Add event listeners to join buttons
     document.querySelectorAll('.group-join-btn').forEach(btn => {
@@ -456,7 +484,7 @@ function renderJoinedGroupsList() {
     });
 
     // Add event listeners to cards for detail view
-    document.querySelectorAll('#joined-groups-list > div').forEach(card => {
+    document.querySelectorAll('#joined-groups-list .cursor-pointer').forEach(card => {
         card.addEventListener('click', (e) => {
             if (!e.target.classList.contains('group-join-btn')) {
                 const groupId = parseInt(card.dataset.groupId);
