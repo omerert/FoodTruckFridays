@@ -935,46 +935,92 @@ function renderUserReviews() {
         commentBtn.className = 'px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-600 hover:text-mauve-600 hover:bg-gray-50';
         commentBtn.textContent = 'Comment';
         
+        commentBtn.addEventListener('click', () => {
+            // Open comments section
+            showComments = true;
+            commentSection.classList.remove('hidden');
+            updateCommentToggleText();
+            // Focus the add comment input
+            setTimeout(() => {
+                const addInput = addCommentInput;
+                if (addInput) {
+                    addInput.focus();
+                    addInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 0);
+        });
+        
         actionsDiv.appendChild(commentBtn);
         li.appendChild(actionsDiv);
         
+        // Comments section state
+        let showComments = false;
+        
         // Comments section
         const comments = getCommentsForStory(story.id);
-        const commentCount = comments.length;
         
         const commentSection = document.createElement('div');
-        commentSection.className = 'mb-3 pt-3';
+        commentSection.className = 'mt-6 pt-6 border-t border-gray-100 space-y-4';
         
-        // Comment display button
-        const commentDisplayBtn = document.createElement('button');
-        commentDisplayBtn.type = 'button';
-        commentDisplayBtn.className = 'text-sm text-mauve-600 hover:text-mauve-800 font-medium flex items-center gap-2 transition-colors';
-        if (commentCount > 0) {
-            commentDisplayBtn.innerHTML = `💬 View ${commentCount} Comment${commentCount !== 1 ? 's' : ''}`;
-        } else {
-            commentDisplayBtn.innerHTML = '💬 View 0 Comments';
+        // Toggle for comments section
+        const commentToggle = document.createElement('button');
+        commentToggle.type = 'button';
+        commentToggle.className = 'text-sm text-gray-600 hover:text-mauve-600 font-medium transition-colors';
+        
+        function updateCommentToggleText() {
+            const updatedComments = getCommentsForStory(story.id);
+            if (updatedComments.length === 0) {
+                commentToggle.textContent = 'No comments yet';
+                commentToggle.className = 'text-sm text-gray-400 font-medium cursor-default';
+                commentToggle.disabled = true;
+            } else {
+                commentToggle.disabled = false;
+                commentToggle.className = 'text-sm text-gray-600 hover:text-mauve-600 font-medium transition-colors cursor-pointer';
+                commentToggle.textContent = showComments ? 'Hide comments' : `View comments (${updatedComments.length})`;
+            }
         }
         
-        let commentsExpanded = false;
-        const commentsDisplay = document.createElement('div');
-        commentsDisplay.className = 'hidden mt-3 space-y-3';
+        commentToggle.addEventListener('click', () => {
+            showComments = !showComments;
+            updateCommentToggleText();
+            if (showComments) {
+                commentSection.classList.remove('hidden');
+            } else {
+                commentSection.classList.add('hidden');
+            }
+        });
         
-        function renderCommentsDisplay() {
-            commentsDisplay.innerHTML = '';
+        updateCommentToggleText();
+        li.appendChild(commentToggle);
+        
+        // Set initial hidden state for commentSection
+        commentSection.className = 'hidden mt-6 pt-6 border-t border-gray-100 space-y-4';
+        
+        // Render comments and replies
+        function renderCommentsWithReplies() {
+            commentSection.innerHTML = '';
             const updatedComments = getCommentsForStory(story.id);
-            updatedComments.forEach((c, idx) => {
+            
+            if (updatedComments.length === 0) {
+                const emptyMsg = document.createElement('p');
+                emptyMsg.className = 'text-sm text-gray-500 text-center py-4';
+                emptyMsg.textContent = 'No comments yet. Be the first to share your thoughts!';
+                commentSection.appendChild(emptyMsg);
+            } else {
+                updatedComments.forEach((c, commentIdx) => {
+                // Top-level comment
                 const commentDiv = document.createElement('div');
-                commentDiv.className = 'flex gap-2';
+                commentDiv.className = 'flex gap-3';
                 
                 const avatar = document.createElement('div');
                 avatar.className = 'flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-mauve-200 to-purple-200 flex items-center justify-center text-xs font-bold text-mauve-700';
                 avatar.textContent = '👤';
                 
                 const content = document.createElement('div');
-                content.className = 'flex-1 min-w-0';
+                content.className = 'flex-1';
                 
                 const textDiv = document.createElement('div');
-                textDiv.className = 'flex items-start justify-between gap-2';
+                textDiv.className = 'flex items-start justify-between gap-2 mb-1';
                 
                 const text = document.createElement('p');
                 text.className = 'text-sm text-gray-700 bg-cream-50 rounded-lg px-3 py-2 border border-gray-100';
@@ -982,134 +1028,177 @@ function renderUserReviews() {
                 
                 const deleteBtn = document.createElement('button');
                 deleteBtn.type = 'button';
-                deleteBtn.className = 'text-xs text-red-500 hover:text-red-700 font-medium transition-colors flex-shrink-0 pt-1';
+                deleteBtn.className = 'text-xs text-red-500 hover:text-red-700 font-medium transition-colors flex-shrink-0';
                 deleteBtn.textContent = '✕';
                 deleteBtn.addEventListener('click', () => {
-                    deleteCommentForStory(story.id, idx);
-                    renderCommentsDisplay();
-                    updateCommentCount();
+                    deleteCommentForStory(story.id, commentIdx);
+                    renderCommentsWithReplies();
                 });
                 
                 textDiv.appendChild(text);
                 textDiv.appendChild(deleteBtn);
                 
                 const date = document.createElement('p');
-                date.className = 'text-xs text-gray-400 mt-1 px-1';
+                date.className = 'text-xs text-gray-400 px-1';
                 date.textContent = new Date(c.createdAt).toLocaleDateString();
+                
+                const replyLink = document.createElement('button');
+                replyLink.type = 'button';
+                replyLink.className = 'text-xs text-mauve-600 hover:text-mauve-800 font-medium transition-colors mt-1';
+                replyLink.textContent = 'Reply';
+                replyLink.addEventListener('click', () => {
+                    showReplyInput(commentIdx);
+                });
                 
                 content.appendChild(textDiv);
                 content.appendChild(date);
+                content.appendChild(replyLink);
                 
                 commentDiv.appendChild(avatar);
                 commentDiv.appendChild(content);
-                commentsDisplay.appendChild(commentDiv);
-            });
-            
-            // Add comment input
-            const inputDiv = document.createElement('div');
-            inputDiv.className = 'flex gap-2 pt-2 border-t border-gray-100 mt-2';
-            
-            const inputAvatar = document.createElement('div');
-            inputAvatar.className = 'flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-mauve-300 to-purple-300 flex items-center justify-center text-xs font-bold text-white';
-            inputAvatar.textContent = '👤';
-            
-            const formDiv = document.createElement('div');
-            formDiv.className = 'flex-1 flex gap-2';
-            
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.placeholder = 'Add a comment...';
-            input.className = 'flex-1 px-3 py-1.5 rounded-lg border border-gray-200 bg-cream-50 text-sm focus:border-mauve-400 focus:ring-1 focus:ring-mauve-200 focus:outline-none transition-colors';
-            
-            const submitBtn = document.createElement('button');
-            submitBtn.type = 'button';
-            submitBtn.textContent = 'Post';
-            submitBtn.className = 'px-3 py-1.5 rounded-lg bg-mauve-600 text-white text-sm font-medium hover:bg-mauve-700 transition-colors';
-            
-            submitBtn.addEventListener('click', () => {
-                const val = input.value.trim();
-                if (val) {
-                    addCommentForStory(story.id, val);
-                    input.value = '';
-                    renderCommentsDisplay();
-                    updateCommentCount();
+                commentSection.appendChild(commentDiv);
+                
+                // Render replies
+                if (c.replies && c.replies.length > 0) {
+                    c.replies.forEach((r, replyIdx) => {
+                        const replyDiv = document.createElement('div');
+                        replyDiv.className = 'flex gap-3 ml-8 mt-2';
+                        
+                        const replyAvatar = document.createElement('div');
+                        replyAvatar.className = 'flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br from-sage-100 to-mauve-100 flex items-center justify-center text-xs font-bold text-sage-600';
+                        replyAvatar.textContent = '↳';
+                        
+                        const replyContent = document.createElement('div');
+                        replyContent.className = 'flex-1';
+                        
+                        const replyTextDiv = document.createElement('div');
+                        replyTextDiv.className = 'flex items-start justify-between gap-2 mb-1';
+                        
+                        const replyText = document.createElement('p');
+                        replyText.className = 'text-xs text-gray-700 bg-gray-50 rounded-lg px-3 py-2 border border-gray-100';
+                        replyText.textContent = r.text;
+                        
+                        const replyDeleteBtn = document.createElement('button');
+                        replyDeleteBtn.type = 'button';
+                        replyDeleteBtn.className = 'text-xs text-red-500 hover:text-red-700 font-medium transition-colors flex-shrink-0';
+                        replyDeleteBtn.textContent = '✕';
+                        replyDeleteBtn.addEventListener('click', () => {
+                            c.replies.splice(replyIdx, 1);
+                            const allComments = JSON.parse(localStorage.getItem('storyComments') || '{}');
+                            allComments[story.id] = updatedComments;
+                            localStorage.setItem('storyComments', JSON.stringify(allComments));
+                            renderCommentsWithReplies();
+                        });
+                        
+                        replyTextDiv.appendChild(replyText);
+                        replyTextDiv.appendChild(replyDeleteBtn);
+                        
+                        const replyDate = document.createElement('p');
+                        replyDate.className = 'text-xs text-gray-400 px-1';
+                        replyDate.textContent = new Date(r.createdAt).toLocaleDateString();
+                        
+                        replyContent.appendChild(replyTextDiv);
+                        replyContent.appendChild(replyDate);
+                        
+                        replyDiv.appendChild(replyAvatar);
+                        replyDiv.appendChild(replyContent);
+                        commentSection.appendChild(replyDiv);
+                    });
                 }
+                
+                // Reply input (shown when replying to this comment)
+                const replyInputDiv = document.createElement('div');
+                replyInputDiv.className = 'hidden ml-8 flex gap-2 mt-2';
+                replyInputDiv.setAttribute('data-reply-input', commentIdx);
+                
+                const replyInputAvatar = document.createElement('div');
+                replyInputAvatar.className = 'flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br from-mauve-300 to-purple-300 flex items-center justify-center text-xs font-bold text-white';
+                replyInputAvatar.textContent = '↳';
+                
+                const replyFormDiv = document.createElement('div');
+                replyFormDiv.className = 'flex-1 flex gap-2';
+                
+                const replyInput = document.createElement('input');
+                replyInput.type = 'text';
+                replyInput.placeholder = 'Write a reply...';
+                replyInput.className = 'flex-1 px-2 py-1.5 rounded-lg border border-gray-200 bg-cream-50 text-xs focus:border-mauve-400 focus:ring-1 focus:ring-mauve-200 focus:outline-none transition-colors';
+                
+                const replySubmitBtn = document.createElement('button');
+                replySubmitBtn.type = 'button';
+                replySubmitBtn.textContent = 'Post';
+                replySubmitBtn.className = 'px-2 py-1.5 rounded-lg bg-mauve-600 text-white text-xs font-medium hover:bg-mauve-700 transition-colors';
+                
+                replySubmitBtn.addEventListener('click', () => {
+                    const val = replyInput.value.trim();
+                    if (val) {
+                        addReplyToComment(story.id, commentIdx, val);
+                        replyInputDiv.classList.add('hidden');
+                        renderCommentsWithReplies();
+                    }
+                });
+                
+                replyFormDiv.appendChild(replyInput);
+                replyFormDiv.appendChild(replySubmitBtn);
+                replyInputDiv.appendChild(replyInputAvatar);
+                replyInputDiv.appendChild(replyFormDiv);
+                commentSection.appendChild(replyInputDiv);
             });
-            
-            formDiv.appendChild(input);
-            formDiv.appendChild(submitBtn);
-            inputDiv.appendChild(inputAvatar);
-            inputDiv.appendChild(formDiv);
-            commentsDisplay.appendChild(inputDiv);
-            
-            // Return reference to input for focusing
-            return input;
-        }
-        
-        if (commentCount > 0) {
-            renderCommentsDisplay();
-        }
-        
-        function updateCommentCount() {
-            const updatedComments = getCommentsForStory(story.id);
-            const newCount = updatedComments.length;
-            if (newCount > 0) {
-                commentDisplayBtn.innerHTML = `💬 View ${newCount} Comment${newCount !== 1 ? 's' : ''}`;
-            } else {
-                commentDisplayBtn.innerHTML = '💬 View 0 Comments';
             }
         }
         
-        function toggleComments(shouldFocus = false) {
-            commentsExpanded = !commentsExpanded;
-            if (commentsExpanded) {
-                if (commentsDisplay.innerHTML === '') {
-                    const input = renderCommentsDisplay();
-                    if (shouldFocus && input) {
-                        setTimeout(() => {
-                            input.focus();
-                            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }, 0);
-                    }
-                } else {
-                    const input = commentsDisplay.querySelector('input');
-                    if (shouldFocus && input) {
-                        input.focus();
-                        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                }
-                commentsDisplay.classList.remove('hidden');
-                commentDisplayBtn.innerHTML = '💬 Hide Comments';
-            } else {
-                commentsDisplay.classList.add('hidden');
-                const updatedComments = getCommentsForStory(story.id);
-                const newCount = updatedComments.length;
-                commentDisplayBtn.innerHTML = newCount > 0 ? `💬 View ${newCount} Comment${newCount !== 1 ? 's' : ''}` : '💬 View 0 Comments';
+        function showReplyInput(commentIdx) {
+            // Hide all reply inputs
+            commentSection.querySelectorAll('[data-reply-input]').forEach(el => {
+                el.classList.add('hidden');
+            });
+            // Show the one for this comment
+            const replyInput = commentSection.querySelector(`[data-reply-input="${commentIdx}"]`);
+            if (replyInput) {
+                replyInput.classList.remove('hidden');
+                replyInput.querySelector('input').focus();
             }
         }
         
-        commentDisplayBtn.addEventListener('click', () => {
-            toggleComments(false);
-        });
-        
-        commentSection.appendChild(commentDisplayBtn);
-        commentSection.appendChild(commentsDisplay);
-        
+        renderCommentsWithReplies();
         li.appendChild(commentSection);
-        li.appendChild(editActionsDiv);
         
-        // Wire up Comment button to open comments and focus input
-        commentBtn.addEventListener('click', () => {
-            if (!commentsExpanded) {
-                toggleComments(true);
-            } else {
-                const input = commentsDisplay.querySelector('input');
-                if (input) {
-                    input.focus();
-                    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+        // Add comment input at the bottom
+        const addCommentDiv = document.createElement('div');
+        addCommentDiv.className = 'mt-4 flex gap-2';
+        
+        const addCommentAvatar = document.createElement('div');
+        addCommentAvatar.className = 'flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-mauve-300 to-purple-300 flex items-center justify-center text-xs font-bold text-white';
+        addCommentAvatar.textContent = '👤';
+        
+        const addCommentFormDiv = document.createElement('div');
+        addCommentFormDiv.className = 'flex-1 flex gap-2';
+        
+        const addCommentInput = document.createElement('input');
+        addCommentInput.type = 'text';
+        addCommentInput.placeholder = 'Add a comment...';
+        addCommentInput.className = 'flex-1 px-3 py-1.5 rounded-lg border border-gray-200 bg-cream-50 text-sm focus:border-mauve-400 focus:ring-1 focus:ring-mauve-200 focus:outline-none transition-colors';
+        
+        const addCommentSubmitBtn = document.createElement('button');
+        addCommentSubmitBtn.type = 'button';
+        addCommentSubmitBtn.textContent = 'Post';
+        addCommentSubmitBtn.className = 'px-3 py-1.5 rounded-lg bg-mauve-600 text-white text-sm font-medium hover:bg-mauve-700 transition-colors';
+        
+        addCommentSubmitBtn.addEventListener('click', () => {
+            const val = addCommentInput.value.trim();
+            if (val) {
+                addCommentForStory(story.id, val);
+                addCommentInput.value = '';
+                renderCommentsWithReplies();
             }
         });
+        
+        addCommentFormDiv.appendChild(addCommentInput);
+        addCommentFormDiv.appendChild(addCommentSubmitBtn);
+        addCommentDiv.appendChild(addCommentAvatar);
+        addCommentDiv.appendChild(addCommentFormDiv);
+        commentSection.appendChild(addCommentDiv);
+        
+        li.appendChild(editActionsDiv);
         
         if (window.lucide) {
             window.lucide.createIcons();
