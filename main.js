@@ -25,6 +25,48 @@ let modalImg2;
 // --- navigation functions ---
 
 /**
+ * Updates the navigation bar to highlight the active tab
+ * @param {string} viewName - The name of the current view
+ */
+function updateNavHighlight(viewName) {
+    const navItems = {
+        'calendar': 'nav-calendar',
+        'share': 'nav-share',   // "Stories" tab highlights for Share view
+        'stories': 'nav-share', // "Stories" tab also highlights for Stories Feed view
+        'joinGroup': 'nav-groups'
+    };
+
+    // Standard styling classes
+    const inactiveClasses = ['text-gray-600', 'hover:text-mauve-600', 'bg-transparent'];
+    const activeClasses = ['text-mauve-700', 'bg-mauve-100', 'font-bold', 'rounded-xl', 'px-4', 'py-2'];
+
+    // Reset all nav items
+    Object.values(navItems).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.classList.remove(...activeClasses);
+            el.classList.add(...inactiveClasses);
+            // Reset icon color if needed (handled by CSS group-hover usually, but we can force it)
+            const icon = el.querySelector('i');
+            if(icon) icon.classList.remove('stroke-mauve-600');
+        }
+    });
+
+    // Highlight the current one
+    const activeId = navItems[viewName];
+    if (activeId) {
+        const activeEl = document.getElementById(activeId);
+        if (activeEl) {
+            activeEl.classList.remove(...inactiveClasses);
+            activeEl.classList.add(...activeClasses);
+             // Force icon color match
+             const icon = activeEl.querySelector('i');
+             if(icon) icon.classList.add('stroke-mauve-600');
+        }
+    }
+}
+
+/**
  * hides all views and shows just the one we want
  * @param {string} viewname - 'home' or 'calendar'
  */
@@ -33,8 +75,14 @@ function showView(viewName) {
     Object.values(views).forEach(view => {
         if (view) view.classList.add('hidden');
     });
+    
     // then, show the one we asked for (as long as it's not the modal)
-    if (views[viewName] && viewName !== 'modal') {
+    // Handle 'stories' view special case since it might be triggered externally or added to views
+    if (viewName === 'stories') {
+        const storiesView = document.getElementById('stories-view');
+        if (storiesView) storiesView.classList.remove('hidden');
+        if (window.showStoriesView) window.showStoriesView(); // Ensure render logic runs
+    } else if (views[viewName] && viewName !== 'modal') {
         views[viewName].classList.remove('hidden');
 
         // If showing calendar view, ensure correct subview is shown
@@ -47,6 +95,19 @@ function showView(viewName) {
             document.getElementById('show-list-view').classList.toggle('active', !showingCalendar);
         }
     }
+
+    // Toggle Nav Bar Visibility
+    const navBar = document.getElementById('main-nav-links');
+    if (navBar) {
+        if (viewName === 'home') {
+            navBar.style.display = 'none';
+        } else {
+            navBar.style.display = ''; // Reverts to CSS (flex on desktop, hidden on mobile)
+        }
+    }
+
+    // Update the Navigation Highlight
+    updateNavHighlight(viewName);
 }
 
 /**
@@ -174,27 +235,36 @@ function buildCalendar(year, month) {
             truckTag.className = "bg-white border border-mauve-200 rounded-lg p-2 shadow-sm group-hover:shadow-md transition-shadow";
             
             const nameRow = document.createElement('div');
-            nameRow.className = "flex items-center gap-1.5 mb-1";
+            nameRow.className = "flex items-start gap-1.5 mb-1"; // changed items-center to items-start for better wrapping
             
             const flagSpan = document.createElement('span');
             flagSpan.textContent = eventData.flag;
-            flagSpan.className = "text-lg";
+            flagSpan.className = "text-lg shrink-0"; // added shrink-0 so flag doesn't squash
             
             const nameSpan = document.createElement('span');
-            nameSpan.className = "text-xs font-bold text-gray-800 truncate leading-tight";
+            nameSpan.className = "text-xs font-bold text-gray-800 leading-tight"; // removed truncate
             nameSpan.textContent = eventData.truckName;
             
             nameRow.appendChild(flagSpan);
             nameRow.appendChild(nameSpan);
             truckTag.appendChild(nameRow);
 
-            // Time (small)
+            // Time (Full Range)
             if (eventData.time) {
                 const timeSpan = document.createElement('div');
-                timeSpan.className = "text-[10px] text-gray-500 pl-0.5 flex items-center gap-1";
-                // Add clock icon
-                timeSpan.innerHTML = `<i data-lucide="clock" class="w-3 h-3 inline-block"></i> ${eventData.time.split('-')[0].trim()}`;
+                timeSpan.className = "text-[10px] text-gray-500 pl-0.5 flex items-center gap-1 mb-0.5";
+                // Add clock icon, removed split() to show full range
+                timeSpan.innerHTML = `<i data-lucide="clock" class="w-3 h-3 inline-block shrink-0"></i> ${eventData.time}`;
                 truckTag.appendChild(timeSpan);
+            }
+
+            // Location (New Addition)
+            if (eventData.location) {
+                const locationSpan = document.createElement('div');
+                locationSpan.className = "text-[10px] text-gray-500 pl-0.5 flex items-center gap-1";
+                // Add map-pin icon
+                locationSpan.innerHTML = `<i data-lucide="map-pin" class="w-3 h-3 inline-block shrink-0"></i> ${eventData.location}`;
+                truckTag.appendChild(locationSpan);
             }
 
             eventDiv.appendChild(truckTag);
@@ -346,6 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
         calendar: document.getElementById('calendar-view'),
         modal: document.getElementById('modal-view'),
         share: document.getElementById('share-view'),
+        stories: document.getElementById('stories-view'), // Add this to track stories view
         joinGroup: document.getElementById('join-group-view')
     };
     calendarGrid = document.getElementById('calendar-days-grid');
@@ -364,7 +435,11 @@ document.addEventListener('DOMContentLoaded', () => {
     buildUpcomingList(30);
 
     // --- navigation event listeners ---
-    // set up all our buttons
+    
+    // Header Navigation Links
+    document.getElementById('nav-calendar')?.addEventListener('click', () => showView('calendar'));
+    document.getElementById('nav-share')?.addEventListener('click', () => showView('share'));
+    document.getElementById('nav-groups')?.addEventListener('click', () => showView('joinGroup'));
 
     // home -> calendar
     document.getElementById('view-calendar-btn').addEventListener('click', () => {
@@ -444,5 +519,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize the Join Group module
     initJoinGroup();
+    
+    // Check initial state (default is home)
+    showView('home');
 
 });
