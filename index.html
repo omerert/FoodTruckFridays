@@ -334,50 +334,62 @@
                 </div>
 
                 <div id="browse-groups-section" class="space-y-6">
-                    <div class="bg-gradient-to-r from-white to-cream-50 rounded-2xl shadow-sm border border-mauve-100 p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Search Bar -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-mauve-100 p-4">
                         <div class="relative">
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Cuisine</label>
-                            <div class="relative">
-                                <select id="filter-cuisine" class="w-full rounded-lg border-gray-200 bg-cream-50 py-2 pl-3 pr-8 text-sm focus:border-mauve-500 focus:ring-1 focus:ring-mauve-500 appearance-none">
-                                    <option value="">All Cuisines</option>
-                                    <option value="Middle Eastern">Middle Eastern</option>
-                                    <option value="Asian">Asian</option>
-                                    <option value="Latin American">Latin American</option>
-                                    <option value="African">African</option>
-                                    <option value="European">European</option>
-                                    <option value="North American">North American</option>
-                                    <option value="Mixed">Mixed</option>
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
-                                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
-                                </div>
+                            <input id="group-search" type="text" placeholder="Search groups by name or description..." class="w-full rounded-xl border-gray-200 bg-cream-50 py-3 pl-10 pr-4 text-sm focus:border-mauve-500 focus:ring-1 focus:ring-mauve-500">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                                <i data-lucide="search" class="w-5 h-5"></i>
                             </div>
                         </div>
-                        <div class="relative">
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Type</label>
-                            <div class="relative">
-                                <select id="filter-type" class="w-full rounded-lg border-gray-200 bg-cream-50 py-2 pl-3 pr-8 text-sm focus:border-mauve-500 focus:ring-1 focus:ring-mauve-500 appearance-none">
-                                    <option value="">All Types</option>
-                                    <option value="culture">Cultural Background</option>
-                                    <option value="language">Language Exchange</option>
-                                    <option value="mixed">Mixed Social</option>
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
-                                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
-                                </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="bg-gradient-to-r from-white to-cream-50 rounded-2xl shadow-sm border border-mauve-100 p-6 space-y-4">
+                        <!-- Cuisine Multi-Select -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Cuisine (Select multiple)</label>
+                            <div class="flex flex-wrap gap-2">
+                                <button class="cuisine-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all border border-gray-200 bg-cream-50 text-gray-700 hover:border-mauve-300" data-cuisine="Middle Eastern">Middle Eastern</button>
+                                <button class="cuisine-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all border border-gray-200 bg-cream-50 text-gray-700 hover:border-mauve-300" data-cuisine="Asian">Asian</button>
+                                <button class="cuisine-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all border border-gray-200 bg-cream-50 text-gray-700 hover:border-mauve-300" data-cuisine="Latin American">Latin American</button>
+                                <button class="cuisine-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all border border-gray-200 bg-cream-50 text-gray-700 hover:border-mauve-300" data-cuisine="African">African</button>
+                                <button class="cuisine-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all border border-gray-200 bg-cream-50 text-gray-700 hover:border-mauve-300" data-cuisine="European">European</button>
+                                <button class="cuisine-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all border border-gray-200 bg-cream-50 text-gray-700 hover:border-mauve-300" data-cuisine="North American">North American</button>
+                                <button class="cuisine-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all border border-gray-200 bg-cream-50 text-gray-700 hover:border-mauve-300" data-cuisine="Mixed">Mixed</button>
                             </div>
                         </div>
-                        <div class="relative">
-                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Size</label>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="relative">
-                                <select id="filter-size" class="w-full rounded-lg border-gray-200 bg-cream-50 py-2 pl-3 pr-8 text-sm focus:border-mauve-500 focus:ring-1 focus:ring-mauve-500 appearance-none">
-                                    <option value="">Any Size</option>
-                                    <option value="small">Small (2-5)</option>
-                                    <option value="medium">Medium (6-10)</option>
-                                    <option value="large">Large (11+)</option>
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
-                                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">
+                                    Type
+                                    <span class="text-gray-400 normal-case font-normal text-xs ml-1" title="Cultural: Groups focused on shared heritage. Language: Groups for practicing languages. Mixed: Social groups for everyone.">ℹ️</span>
+                                </label>
+                                <div class="relative">
+                                    <select id="filter-type" class="w-full rounded-lg border-gray-200 bg-cream-50 py-2 pl-3 pr-8 text-sm focus:border-mauve-500 focus:ring-1 focus:ring-mauve-500 appearance-none">
+                                        <option value="">All Types</option>
+                                        <option value="culture">🌍 Cultural Background</option>
+                                        <option value="language">💬 Language Exchange</option>
+                                        <option value="mixed">🤝 Mixed Social</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
+                                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Group Size</label>
+                                <div class="relative">
+                                    <select id="filter-size" class="w-full rounded-lg border-gray-200 bg-cream-50 py-2 pl-3 pr-8 text-sm focus:border-mauve-500 focus:ring-1 focus:ring-mauve-500 appearance-none">
+                                        <option value="">Any Size</option>
+                                        <option value="small">Small (2-5)</option>
+                                        <option value="medium">Medium (6-10)</option>
+                                        <option value="large">Large (11+)</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-500">
+                                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -454,7 +466,7 @@
 
                             <div class="pt-4 flex justify-end gap-3">
                                 <button type="button" id="create-cancel" class="px-6 py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium">Cancel</button>
-                                <button type="submit" id="create-submit" class="px-8 py-2.5 rounded-xl bg-mauve-600 text-white font-medium hover:bg-mauve-700 shadow-md hover:shadow-lg transition-all">Create</button>
+                                <button type="submit" id="create-submit" class="px-8 py-2.5 rounded-xl bg-mauve-600 text-white font-medium hover:bg-mauve-700 shadow-md hover:shadow-lg transition-all opacity-50 cursor-not-allowed" disabled>Create</button>
                             </div>
                         </form>
                     </div>

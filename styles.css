@@ -5,9 +5,11 @@
 }
 
 .calendar-day {
-    min-height: 130px; /* Slightly taller for better spacing */
+    min-height: 130px;
+    /* Slightly taller for better spacing */
     background-color: #ffffff;
-    border-radius: 1rem; /* Rounded corners for day cells */
+    border-radius: 1rem;
+    /* Rounded corners for day cells */
     transition: all 0.2s ease-in-out;
 }
 
@@ -31,16 +33,20 @@
 
 /* Highlight for today's date - Using Mauve Theme */
 .calendar-day.today-highlight {
-    background-color: #fff; /* Clean white background */
-    border: 2px solid #9d7586; /* Mauve-500 border */
-    box-shadow: 0 0 0 4px rgba(157, 117, 134, 0.15); /* Soft glow */
+    background-color: #fff;
+    /* Clean white background */
+    border: 2px solid #9d7586;
+    /* Mauve-500 border */
+    box-shadow: 0 0 0 4px rgba(157, 117, 134, 0.15);
+    /* Soft glow */
     position: relative;
     z-index: 20;
 }
 
 /* Event Indicator */
 .calendar-day.has-event {
-    background-color: #fbf7f9; /* Mauve-50 */
+    background-color: #fbf7f9;
+    /* Mauve-50 */
 }
 
 /* View Navigation Buttons (Toggle) */
@@ -49,7 +55,8 @@
 }
 
 .view-nav-btn.active {
-    background-color: #9d7586; /* Mauve-500 */
+    background-color: #9d7586;
+    /* Mauve-500 */
     color: white;
     box-shadow: 0 2px 4px rgba(157, 117, 134, 0.3);
 }
@@ -80,36 +87,71 @@
 
 /* Animation for Content */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes bounce-subtle {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
 }
 
 .animate-bounce-subtle {
     animation: bounce-subtle 2s ease-in-out infinite;
 }
 
-#groups-list > div,
-#joined-groups-list > div,
-#stories-list > li {
+#groups-list>div,
+#joined-groups-list>div,
+#stories-list>li {
     animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Toast Notifications */
+.toast-notification {
+    min-width: 250px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Cuisine Filter Buttons */
+.cuisine-filter-btn {
+    cursor: pointer;
+    user-select: none;
+}
+
+.cuisine-filter-btn:active {
+    transform: scale(0.95);
 }
 
 /* Scrollbar Styling */
 ::-webkit-scrollbar {
     width: 8px;
 }
+
 ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
+    background: #f1f1f1;
 }
+
 ::-webkit-scrollbar-thumb {
-    background: #d1d5db; 
+    background: #d1d5db;
     border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-    background: #9ca3af; 
+    background: #9ca3af;
 }
