@@ -325,7 +325,7 @@ function renderGroupCard(group, showJoinButton = true) {
     const recommendedTrucks = getRecommendedTrucks(group.cuisine);
 
     const card = document.createElement('div');
-    card.className = 'bg-gradient-to-br from-white to-cream-50 rounded-2xl shadow-md border border-mauve-100 p-5 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer';
+    card.className = 'bg-gradient-to-br from-white to-cream-50 rounded-2xl shadow-md border border-mauve-100 p-5 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer self-start';
     card.dataset.groupId = group.id;
 
     card.innerHTML = `
@@ -563,7 +563,7 @@ function showGroupDetails(groupId) {
                 <div>
                     <h4 class="text-sm font-bold text-gray-400 uppercase mb-3">Upcoming Events</h4>
                     <div class="space-y-2">
-                        ${recommendedTrucks.slice(0, 3).map(truck => `
+                        ${recommendedTrucks.map(truck => `
                             <div class="text-xs bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 rounded-lg p-3">
                                 <div class="flex items-center gap-2 mb-1">
                                     <span class="text-lg">${truck.flag}</span>
