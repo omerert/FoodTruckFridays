@@ -412,7 +412,7 @@ function renderStoriesList() {
 }
 
 // Show stories view
-function showStoriesView() {
+export function showStoriesView() {
     // Hide all views except stories
     ['home-view', 'calendar-view', 'modal-view', 'share-view', 'stories-view'].forEach(id => {
         const el = document.getElementById(id);
@@ -1182,8 +1182,8 @@ function setupShareTabs() {
     });
 }
 
-// Initialize when DOM ready
-document.addEventListener('DOMContentLoaded', () => {
+// Export this initialization function
+export function initShareStory() {
     populateTruckSelect();
     setupRatingStars();
     setupPhotoInput();
@@ -1202,11 +1202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Stories back button
     const storiesBackBtn = document.getElementById('stories-back-btn');
     if (storiesBackBtn) storiesBackBtn.addEventListener('click', () => {
-        // Hide stories, show home
         document.getElementById('stories-view').classList.add('hidden');
         document.getElementById('home-view').classList.remove('hidden');
     });
-
-    // Optionally, expose showStoriesView globally if you want to navigate from elsewhere
-    window.showStoriesView = showStoriesView;
-});
+}
