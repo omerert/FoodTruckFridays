@@ -222,7 +222,7 @@ function buildCalendar(year, month) {
         const dayStr = String(currentDate.getDate()).padStart(2, '0');
         const dateString = `${yearStr}-${monthStr}-${dayStr}`;
         
-        // Check for Holiday
+        // UPDATED: Check for Holiday
         if (holidays[dateString]) {
             const holidayDiv = document.createElement('div');
             // Changed text-red-500 to text-mauve-700 (Brand color)
@@ -230,7 +230,7 @@ function buildCalendar(year, month) {
             holidayDiv.textContent = holidays[dateString];
             dayCell.appendChild(holidayDiv);
         }
-        
+
         const eventData = foodTruckSchedule[dateString];
 
         if (eventData) {
@@ -477,8 +477,10 @@ document.addEventListener('DOMContentLoaded', () => {
         calendar: document.getElementById('calendar-view'),
         modal: document.getElementById('modal-view'),
         share: document.getElementById('share-view'),
-        stories: document.getElementById('stories-view'), // Add this to track stories view
-        joinGroup: document.getElementById('join-group-view')
+        stories: document.getElementById('stories-view'),
+        joinGroup: document.getElementById('join-group-view'),
+        // UPDATED: Profile View
+        profile: document.getElementById('profile-view')
     };
     calendarGrid = document.getElementById('calendar-days-grid');
     calendarTitle = document.getElementById('calendar-month-year');
@@ -501,6 +503,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('nav-calendar')?.addEventListener('click', () => showView('calendar'));
     document.getElementById('nav-share')?.addEventListener('click', () => showView('share'));
     document.getElementById('nav-groups')?.addEventListener('click', () => showView('joinGroup'));
+
+    // UPDATED: Profile Navigation
+    document.getElementById('nav-profile-btn')?.addEventListener('click', () => {
+        loadProfile();
+        showView('profile');
+    });
+
+    // Profile -> Home
+    document.getElementById('profile-back-btn')?.addEventListener('click', () => showView('home'));
+    
+    // Save Profile
+    document.getElementById('save-profile-btn')?.addEventListener('click', saveProfile);
 
     // home -> calendar
     document.getElementById('view-calendar-btn').addEventListener('click', () => {
@@ -590,4 +604,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check initial state (default is home)
     showView('home');
 
+    // --- UPDATED: Profile Logic ---
+    function loadProfile() {
+        // 1. Load Personal Details
+        const profile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+        document.getElementById('profile-name').value = profile.name || '';
+        document.getElementById('profile-location').value = profile.location || '';
+        document.getElementById('profile-bio').value = profile.bio || '';
+        document.getElementById('profile-cuisine').value = profile.cuisine || '';
+
+        // Update Badge Preview
+        document.getElementById('display-card-name').textContent = profile.name || 'Guest';
+
+        // 2. Load Stats (Cross-reference other modules' storage)
+        const memberships = JSON.parse(localStorage.getItem('userGroupMemberships') || '[]');
+        const stories = JSON.parse(localStorage.getItem('sharedStories') || '[]');
+        
+        document.getElementById('stats-groups').textContent = memberships.length;
+        document.getElementById('stats-stories').textContent = stories.length;
+    }
+
+    function saveProfile() {
+        const profile = {
+            name: document.getElementById('profile-name').value.trim(),
+            location: document.getElementById('profile-location').value.trim(),
+            bio: document.getElementById('profile-bio').value.trim(),
+            cuisine: document.getElementById('profile-cuisine').value
+        };
+
+        localStorage.setItem('userProfile', JSON.stringify(profile));
+        
+        // Visual feedback
+        const btn = document.getElementById('save-profile-btn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Saved!';
+        btn.classList.add('bg-green-600');
+        
+        // Update Badge immediately
+        document.getElementById('display-card-name').textContent = profile.name || 'Guest';
+
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.classList.remove('bg-green-600');
+        }, 2000);
+    }
 });
