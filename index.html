@@ -118,15 +118,20 @@
 
         <div id="calendar-view" class="hidden">
             <div class="max-w-6xl mx-auto">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-                    <button id="back-to-home-btn" class="text-mauve-600 hover:text-mauve-800 font-medium flex items-center gap-2 transition-colors">
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+                    <button id="back-to-home-btn" class="text-mauve-600 hover:text-mauve-800 font-medium flex items-center gap-2 transition-colors self-start md:self-auto">
                         <i data-lucide="home" class="w-4 h-4"></i>
                         Back to Home
                     </button>
-                    <div class="flex bg-white rounded-xl p-1 shadow-sm border border-gray-100">
-                        <button id="show-calendar-view" class="px-6 py-2 rounded-lg text-sm font-medium view-nav-btn active">Calendar</button>
-                        <button id="show-list-view" class="px-6 py-2 rounded-lg text-sm font-medium view-nav-btn">List</button>
+                    <div class="text-right">
+                        <h2 class="text-3xl font-bold text-gray-800">Food Truck Schedule</h2>
+                        <p class="text-gray-500 mt-1">Check dates, times, and locations for your favorite trucks</p>
                     </div>
+                </div>
+
+                <div class="inline-flex bg-white rounded-xl p-1 shadow-sm border border-gray-100 mb-8">
+                    <button id="show-calendar-view" class="px-6 py-2 rounded-lg text-sm font-medium view-nav-btn active">Calendar</button>
+                    <button id="show-list-view" class="px-6 py-2 rounded-lg text-sm font-medium view-nav-btn">List</button>
                 </div>
                 
                 <div class="bg-white rounded-3xl shadow-lg border border-mauve-100 overflow-hidden">
