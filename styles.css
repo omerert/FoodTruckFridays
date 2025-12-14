@@ -2,11 +2,20 @@
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
+    /* Rows will be at least 140px but stretch to fit content (equalizing the row) */
+    grid-auto-rows: minmax(140px, auto);
 }
 
 .calendar-day {
-    min-height: 130px;
-    /* Slightly taller for better spacing */
+    /* Fill the height of the grid row */
+    height: 100%;
+    
+    /* Ensure all text wraps and is visible */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+
     background-color: #ffffff;
     border-radius: 1rem;
     /* Rounded corners for day cells */
